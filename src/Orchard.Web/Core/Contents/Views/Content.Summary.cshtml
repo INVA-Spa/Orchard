@@ -1,8 +1,15 @@
 ﻿@using Orchard.Utility.Extensions;
 @{
+    var titolo = "";
+    if (Model.Title != null) {
+        titolo = " " + Model.Title;
+    }
     var contentTypeClassName = ((string)Model.ContentItem.ContentType).HtmlClassify();
     Model.Classes.Add(contentTypeClassName);
     Model.Classes.Add("content-item");
+
+    //Criterio di accessibilità 1.3.1 marchi non distinguibili
+    Model.Attributes.Add("aria-label", T("Articolo").ToString() + titolo);
 
     var tag = Tag(Model, "article");
 }

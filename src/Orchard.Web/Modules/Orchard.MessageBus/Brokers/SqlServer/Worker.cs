@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Hosting;
 using Orchard.Environment.Configuration;
@@ -73,6 +73,8 @@ namespace Orchard.MessageBus.Brokers.SqlServer {
             }
             catch (Exception e) {
                 Logger.Error(e, "An unexpected error occurred while monitoring sql dependencies.");
+                Logger.Error("SqlDependecy error, I'll try again in 1 minute.");
+                Task.Delay(TimeSpan.FromMilliseconds(60000)).ContinueWith(task => Work());
             }
         }
 

@@ -61,7 +61,17 @@ namespace Orchard.Widgets.Controllers {
                 return RedirectToAction("Index", "Admin", new { area = "Dashboard" });
             }
 
-            IEnumerable<LayerPart> layers = _widgetsService.GetLayers().OrderBy(x => x.Name).ToList();
+            //IEnumerable<LayerPart> layers = _widgetsService.GetLayers().OrderBy(x => x.Name).ToList();
+            // ***************************************************************************
+            // MODIFICA INVA 22-11-2018
+            IEnumerable<LayerPart> layers =
+               _widgetsService.GetLayers()
+               .Where(layer => layer.Name != "ContentWidgets")
+               .OrderBy(x => x.Name)
+               .ToList();
+
+            // ***************************************************************************
+
 
             if (!layers.Any()) {
                 Services.Notifier.Error(T("There are no widget layers defined. A layer will need to be added in order to add widgets to any part of the site."));
@@ -101,7 +111,11 @@ namespace Orchard.Widgets.Controllers {
                 .CurrentLayer(currentLayer)
                 .CurrentCulture(culture)
                 .Layers(layers)
-                .Widgets(widgets)
+                // .Widgets(widgets)
+                // ***************************************************************************
+                // MODIFICA INVA 29-11-2018
+                .Widgets(widgets.Where(w => layers.Select(l => l.Id).Contains((int)w.LayerId)))
+                // ***************************************************************************
                 .Zones(currentThemesZones)
                 .Cultures(_cultureManager.ListCultures())
                 .OrphanZones(allZones.Except(currentThemesZones))

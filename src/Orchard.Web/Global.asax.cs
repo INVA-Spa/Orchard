@@ -1,4 +1,5 @@
-﻿using System.Web;
+﻿using System.Net;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
 using Autofac;
@@ -24,6 +25,10 @@ namespace Orchard.Web {
             RegisterRoutes(RouteTable.Routes);
             _starter = new Starter<IOrchardHost>(HostInitialization, HostBeginRequest, HostEndRequest);
             _starter.OnApplicationStart(this);
+            ServicePointManager.UseNagleAlgorithm = true;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.CheckCertificateRevocationList = true;
+            ServicePointManager.DefaultConnectionLimit = 99999;
         }
 
         protected void Application_BeginRequest() {

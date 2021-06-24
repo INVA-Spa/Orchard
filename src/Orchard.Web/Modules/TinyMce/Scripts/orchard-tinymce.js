@@ -13,13 +13,15 @@ tinyMCE.init({
     theme: "modern",
     schema: "html5",
     plugins: [
-        "advlist, anchor, autolink, autoresize, charmap, code, colorpicker, contextmenu, directionality, emoticons, fullscreen, hr, image, insertdatetime, link, lists, media, nonbreaking, pagebreak, paste, preview, print, searchreplace, table, template, textcolor, textpattern, visualblocks, visualchars, wordcount" + mediaPlugins
+        "advlist, anchor, autolink,  charmap, code, colorpicker, contextmenu, directionality, emoticons, fullscreen, hr, image, insertdatetime, link, lists, media, nonbreaking, pagebreak, paste, preview, print, searchreplace, table, template, textcolor, textpattern, visualblocks, visualchars, wordcount" + mediaPlugins
     ],
+    content_css: "/Themes/RAVDA/Styles/css/regione-vda-tinymce.css",
     toolbar: "undo redo cut copy paste | bold italic | bullist numlist outdent indent formatselect | alignleft aligncenter alignright alignjustify ltr rtl | " + mediaPlugins + " link unlink charmap | code fullscreen",
     convert_urls: false,
     valid_elements: "*[*]",
     // Shouldn't be needed due to the valid_elements setting, but TinyMCE would strip script.src without it.
-    extended_valid_elements: "script[type|defer|src|language]",
+    extended_valid_elements: "script[type|defer|src|language],img[usemap|class|src|alt|title|hspace|vspace|width|height|align|onmouseover|onmouseout|name],map[id|name],area[shape|alt|title|coords|href|target],div[*],p[*],a[*],span[*]",
+    valid_children: '+a[div|span|img|h1|h2|h3|h4|h5|h6|p]',
     //menubar: false,
     //statusbar: false,
     skin: "orchardlightgray",

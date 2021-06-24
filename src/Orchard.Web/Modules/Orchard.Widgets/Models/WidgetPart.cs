@@ -86,5 +86,13 @@ namespace Orchard.Widgets.Models {
             get { return this.Retrieve(x => x.CssClasses); }
             set { this.Store(x => x.CssClasses, value); }
         }
+
+        /// <summary>
+        /// Definisce se renderizzare il widget oppure no
+        /// </summary>
+        public bool RenderThis {
+            get;
+            set;
+        }
     }
 }
