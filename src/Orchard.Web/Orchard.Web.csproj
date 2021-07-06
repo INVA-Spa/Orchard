@@ -147,6 +147,14 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Inva\new.regione.vda.it\src\Inva.Libraires\Inva.Orchard.Core\Inva.Orchard.Core.csproj">
+      <Project>{8a79ab60-d4e7-4deb-bfb9-f4dc2ae79b3e}</Project>
+      <Name>Inva.Orchard.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Inva\new.regione.vda.it\src\Laser.Libraries\Laser.Orchard.Commons\Laser.Orchard.Commons.csproj">
+      <Project>{9d49df40-ae74-4cce-b628-a1b26e99b2d4}</Project>
+      <Name>Laser.Orchard.Commons</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Orchard.WarmupStarter\Orchard.WarmupStarter.csproj">
       <Project>{5C0D5249-AEF5-4BB6-8F5F-057B91AC2D7A}</Project>
       <Name>Orchard.WarmupStarter</Name>

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text.RegularExpressions;
 using Orchard.ContentManagement;
 using Orchard.Localization;
 using Orchard.Logging;
@@ -14,9 +12,6 @@ using Orchard.Users.Events;
 using Orchard.Users.Models;
 using Orchard.Users.Services;
 using Orchard.Utility.Extensions;
-using System;
-using System.Diagnostics.CodeAnalysis;
-using System.Text.RegularExpressions;
 using System.Web.Mvc;
 using System.Web.Security;
 using Orchard.Services;
