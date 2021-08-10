@@ -45,7 +45,6 @@ namespace Orchard.Taxonomies.Controllers {
                 if (taxonomyField != null) {
                     var taxonomySettings = taxonomyField.Settings.GetModel<TaxonomyFieldSettings>();
                     // Getting the translated taxonomy and its terms
-
                     var masterTaxonomy = _taxonomyExtensionsService.GetMasterItem(_taxonomyService.GetTaxonomyByName(taxonomySettings.Taxonomy));
                     IContent taxonomy;
                     var trytranslate = _localizationService.GetLocalizedContentItem(masterTaxonomy, culture);
@@ -60,11 +59,22 @@ namespace Orchard.Taxonomies.Controllers {
                     int firstTermIdForCulture = 0;
                     if (contentId > 0) {
                         appliedTerms = _taxonomyService.GetTermsForContentItem(contentId, taxonomyFieldName, VersionOptions.Published).Distinct(new TermPartComparer()).ToList();
-
-                        // It takes the first term localized with the culture in order to set correctly the TaxonomyFieldViewModel.SingleTermId
-                        var firstTermForCulture = appliedTerms.FirstOrDefault(x => x.As<LocalizationPart>() != null && x.As<LocalizationPart>().Culture != null && x.As<LocalizationPart>().Culture.Culture == culture);
-                        if (firstTermForCulture != null) {
-                            firstTermIdForCulture = firstTermForCulture.Id;
+                        var firstappliedTerm = appliedTerms.FirstOrDefault();
+                        if (firstappliedTerm != null) {
+                            if (firstappliedTerm.As<LocalizationPart>() != null) {
+                                var taxonomyLocalizationSettings = taxonomyField.Settings.GetModel<TaxonomyFieldLocalizationSettings>();
+                                if (taxonomyLocalizationSettings.TryToLocalize) {
+                                    var firstTermForCulture = appliedTerms.FirstOrDefault(x => x.As<LocalizationPart>() != null && x.As<LocalizationPart>().Culture != null && x.As<LocalizationPart>().Culture.Culture == culture);
+                                    if (firstTermForCulture != null) {
+                                        firstTermIdForCulture = firstTermForCulture.Id;
+                                    }
+                                }
+                                else {
+                                    firstTermIdForCulture = firstappliedTerm.As<LocalizationPart>().MasterContentItem.Id;
+                                }
+                            }
+                            else
+                                firstTermIdForCulture = firstappliedTerm.Id;
                         }
                         terms.ForEach(t => t.IsChecked = appliedTerms.Select(x => x.Id).Contains(t.Id));
                     }
