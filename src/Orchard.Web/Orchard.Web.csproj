@@ -145,6 +145,26 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Data\hrestart.txt" />
+    <Content Include="App_Data\Sites\AUSLAndromeda\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\AUSLAndromeda\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Sites\AUSLMaster\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\AUSLMaster\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Sites\AUSL\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\AUSL\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Sites\BollettinoValanghe\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\BollettinoValanghe\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Sites\Consumatori\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\Consumatori\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Sites\CoReCom\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\CoReCom\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Sites\Default\Orchard.sdf" />
+    <Content Include="App_Data\Sites\Fitosanitario\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\Fitosanitario\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Sites\GiovaniVdA\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\GiovaniVdA\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Sites\Svilupposostenibile\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\Svilupposostenibile\Localization\it-IT\orchard.po" />
     <Content Include="Global.asax" />
     <Content Include="Refresh.html" />
     <Content Include="Web.config">
@@ -182,6 +202,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Config\Sites.config" />
+    <Content Include="App_Data\Sites\Invallee\Localization\fr-FR\orchard.po" />
+    <Content Include="App_Data\Sites\Invallee\Localization\it-IT\orchard.po" />
+    <Content Include="App_Data\Localization\fr-FR\orchard.root.po" />
+    <Content Include="App_Data\Localization\it-IT\orchard.root.po" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -236,7 +260,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Data\" />
+    <Folder Include="App_Data\Sites\RavdaMaster\" />
   </ItemGroup>
   <ProjectExtensions>
     <VisualStudio>
