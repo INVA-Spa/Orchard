@@ -105,7 +105,7 @@ namespace Orchard.Widgets.Controllers {
                     return false;
                 }).ToList();
             }
-
+            var layersIds = layers.Select(l => l.Id);
             var viewModel = Shape.ViewModel()
                 .CurrentTheme(currentTheme)
                 .CurrentLayer(currentLayer)
@@ -114,7 +114,7 @@ namespace Orchard.Widgets.Controllers {
                 // .Widgets(widgets)
                 // ***************************************************************************
                 // MODIFICA INVA 29-11-2018
-                .Widgets(widgets.Where(w => layers.Select(l => l.Id).Contains((int)w.LayerId)))
+                .Widgets(widgets.Where(w => w.LayerId.HasValue && layersIds.Contains((int)w.LayerId)))
                 // ***************************************************************************
                 .Zones(currentThemesZones)
                 .Cultures(_cultureManager.ListCultures())
