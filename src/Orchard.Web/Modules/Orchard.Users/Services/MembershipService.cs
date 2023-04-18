@@ -151,7 +151,8 @@ namespace Orchard.Users.Services {
                 Password = user.Password,
                 HashAlgorithm = user.HashAlgorithm,
                 PasswordFormat = user.PasswordFormat,
-                PasswordSalt = user.PasswordSalt
+                PasswordSalt = user.PasswordSalt,
+                User = user
             }, password)) {
                 return null;
             }
