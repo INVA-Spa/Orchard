@@ -166,6 +166,7 @@ namespace Orchard.Environment {
                         catch (Exception ex) {
                             if (i == Retries) {
                                 Logger.Fatal("A tenant could not be started: {0} after {1} retries.", settings.Name, Retries);
+                                Logger.Fatal(ex.ToString());
                                 return;
                             }
                             else {
