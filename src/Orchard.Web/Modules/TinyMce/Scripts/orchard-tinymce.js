@@ -15,7 +15,7 @@ tinyMCE.init({
     plugins: [
         "advlist, anchor, autolink,  charmap, code, colorpicker, contextmenu, directionality, emoticons, fullscreen, hr, image, insertdatetime, link, lists, media, nonbreaking, pagebreak, paste, preview, print, searchreplace, table, template, textcolor, textpattern, visualblocks, visualchars, wordcount" + mediaPlugins
     ],
-    content_css: "/Themes/RAVDA/Styles/css/regione-vda-tinymce.css",
+    content_css: "",
     toolbar: "undo redo cut copy paste | bold italic | bullist numlist outdent indent formatselect | alignleft aligncenter alignright alignjustify ltr rtl | " + mediaPlugins + " link unlink charmap | code fullscreen",
     convert_urls: false,
     valid_elements: "*[*]",
