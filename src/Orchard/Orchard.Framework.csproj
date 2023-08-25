@@ -166,6 +166,7 @@
     <Compile Include="DisplayManagement\Descriptors\ShapePlacementStrategy\IPlacementParseMatchProvider.cs" />
     <Compile Include="ContentManagement\Handlers\ExportImportContentContextBase.cs" />
     <Compile Include="ContentManagement\IGlobalCriteriaProvider.cs" />
+    <Compile Include="DisplayManagement\Descriptors\IAdditionalUIDescriptor.cs" />
     <Compile Include="Environment\Configuration\ExtensionLocations.cs" />
     <Compile Include="DisplayManagement\IPositioned.cs" />
     <Compile Include="DisplayManagement\PositionWrapper.cs" />

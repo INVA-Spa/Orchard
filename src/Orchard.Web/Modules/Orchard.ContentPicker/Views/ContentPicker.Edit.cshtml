@@ -1,6 +1,9 @@
 ﻿@using Orchard.ContentManagement
 @using Orchard.Environment.Configuration
+@using Orchard.DisplayManagement.Descriptors;
 @{
+    var additionalDescriptors = WorkContext.Resolve<IEnumerable<IAdditionalUIDescriptor>>();
+    var validDescriptors = additionalDescriptors.Where(ad => ad.UIContext.Equals("ContentPicker", StringComparison.OrdinalIgnoreCase)).OrderBy(ad => ad.Priority);
     Script.Require("ContentPicker").AtFoot();
     Script.Require("jQueryUI_Sortable").AtFoot();
     Style.Include("content-picker-admin.css");
@@ -50,7 +53,20 @@
                 <tr>
                     <td>&nbsp;</td>
                     <td>
-                        <span data-id="@contentItem.Id" data-fieldid="@idsFieldId" class="content-picker-item">@Html.ItemAdminLink(null, contentItem, new { ReturnUrl = @Request.Url.ToString()}) @if (!contentItem.HasPublished()){<text> - </text>@T("Not Published")}</span>
+                        <span data-id="@contentItem.Id" data-fieldid="@idsFieldId" class="content-picker-item">
+                            @Html.ItemAdminLink(null, contentItem, new { ReturnUrl = @Request.Url.ToString() }) @if (!contentItem.HasPublished())
+                                                {<text> - </text>@T("Not Published")}
+                                            else
+                                            { <text> - </text>@T("Published")}
+                        </span>
+                        @foreach (var ad in validDescriptors)
+                        {
+                            var description = ad.Evaluate(contentItem);
+                            if (!string.IsNullOrWhiteSpace(description))
+                            {
+                                <span> - @Html.Raw(description)</span>
+                            }
+                        }
                     </td>
                     <td>
                         <span data-id="@contentItem.Id" class="content-picker-remove button grey">@T("Remove")</span>
