@@ -1,6 +1,7 @@
 ﻿@using Orchard.ContentManagement
 @using Orchard.Environment.Configuration
 @using Orchard.DisplayManagement.Descriptors;
+@using Orchard.Core.Contents
 @{
     var additionalDescriptors = WorkContext.Resolve<IEnumerable<IAdditionalUIDescriptor>>();
     var validDescriptors = additionalDescriptors.Where(ad => ad.UIContext.Equals("ContentPicker", StringComparison.OrdinalIgnoreCase)).OrderBy(ad => ad.Priority);
@@ -14,12 +15,12 @@
     var idsFieldId = (string)Model.IdsFieldId ?? "";
     var selectedItemsFieldName = (string)Model.SelectedItemsFieldName ?? "";
     var contentItems = (IEnumerable<ContentItem>)Model.ContentItems;
-    var hint = (string) Model.Hint;
+    var hint = (string)Model.Hint;
     var partName = Model.PartName;
     var fieldName = Model.FieldName;
     var baseUrl = Url.Content("~/") + WorkContext.Resolve<ShellSettings>().RequestUrlPrefix;
     var types = String.Join(",", (IEnumerable<string>)Model.Types ?? Enumerable.Empty<string>());
-}   
+}
 
 <fieldset class="content-picker-field"
           data-required="@required.ToString().ToLower()"
@@ -31,8 +32,9 @@
           data-remove-text="@T("Remove")"
           data-not-published-text="@T("Not Published")"
           data-types="@types">
-    @if (!String.IsNullOrWhiteSpace(displayName)) {
-        <label @if (required) { <text> class="required" </text>  }>@displayName</label>
+    @if (!String.IsNullOrWhiteSpace(displayName))
+    {
+        <label @if (required) { <text> class="required" </text> }>@displayName</label>
     }
     <div class="message message-Warning content-picker-message">@T("You need to save your changes.")</div>
     <table class="items content-picker" summary="@displayName">
@@ -49,15 +51,21 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var contentItem in contentItems) {
+            @foreach (var contentItem in contentItems)
+            {
                 <tr>
                     <td>&nbsp;</td>
                     <td>
                         <span data-id="@contentItem.Id" data-fieldid="@idsFieldId" class="content-picker-item">
-                            @Html.ItemAdminLink(null, contentItem, new { ReturnUrl = @Request.Url.ToString() }) @if (!contentItem.HasPublished())
-                                                {<text> - </text>@T("Not Published")}
-                                            else
-                                            { <text> - </text>@T("Published")}
+                            @Html.ItemAdminLink(null, contentItem, new { ReturnUrl = @Request.Url.ToString() })
+                            @if (!contentItem.HasPublished())
+                            {
+                                <text> - </text>@T("Not Published")
+                            }
+                            else
+                            {
+                                <text> - </text>@T("Published")
+                            }
                         </span>
                         @foreach (var ad in validDescriptors)
                         {
@@ -70,6 +78,19 @@
                     </td>
                     <td>
                         <span data-id="@contentItem.Id" class="content-picker-remove button grey">@T("Remove")</span>
+
+                        @if (Authorizer.Authorize(Permissions.PublishContent, contentItem))
+                        {
+                            var unpublishBtnStatus = contentItem.HasPublished() ? ";" : "none;";
+                            var publishBtnStatus = contentItem.HasPublished() ? "none;" : ";";
+                            <span id="@("unpublish_" + contentItem.Id.ToString())" data-id="@contentItem.Id" class="content-picker-unpublish button grey" style="display: @unpublishBtnStatus">
+                                @T("Unpublish")
+                            </span>
+                            <span id="@("publish_" + contentItem.Id.ToString())" data-id="@contentItem.Id" class="content-picker-publish button red" style="display: @publishBtnStatus">
+                                @T("Publish")
+                            </span>
+                            
+                        }
                     </td>
                 </tr>
             }
@@ -80,3 +101,47 @@
     <input type="hidden" name="@selectedItemsFieldName" />
     <span class="hint">@hint</span>
 </fieldset>
+
+@using (Script.Foot())
+{
+    <script type="text/javascript">
+        $("table.content-picker .content-picker-unpublish").click(function () {
+            if (confirm("@T("Do you want to unpublish selected item?")")) {
+                var contentId = $(this).attr("data-id");
+
+                $.ajax({
+                    url: '@Url.Action("Unpublish", "Admin", new { area = "Contents" })/' + contentId,
+                    data: {
+                    //    id: contentId,
+                        __RequestVerificationToken: '@Html.AntiForgeryTokenValueOrchard()'
+                    },
+                    type: 'POST',
+                    success: function () {
+                        $('#unpublish_' + contentId).hide();
+                        $('#publish_' + contentId).show();
+                    }
+                });
+            }
+        });
+
+        $("table.content-picker .content-picker-publish").click(function () {
+            if (confirm("@T("Do you want to publish selected item?")")) {
+                var contentId = $(this).attr("data-id");
+
+                $.ajax({
+                    url: '@Url.Action("Publish", "Admin", new { area = "Contents" })/' + contentId,
+                    data: {
+                        //id: contentId,
+                        __RequestVerificationToken: '@Html.AntiForgeryTokenValueOrchard()'
+                    },
+                    type: 'POST',
+                    success: function () {
+                        $('#unpublish_' + contentId).show();
+                        $('#publish_' + contentId).hide();
+                    }
+                });
+            }
+        });
+
+    </script>
+}
