@@ -58,21 +58,23 @@
                     <td>
                         <span data-id="@contentItem.Id" data-fieldid="@idsFieldId" class="content-picker-item">
                             @Html.ItemAdminLink(null, contentItem, new { ReturnUrl = @Request.Url.ToString() })
-                            @if (!contentItem.HasPublished())
-                            {
-                                <text> - </text>@T("Not Published")
+                            @{
+                                var publishLblStatus = contentItem.HasPublished() ? ";" : "none;";
+                                var unpublishLblStatus = contentItem.HasPublished() ? "none;" : ";";
                             }
-                            else
-                            {
+                            <span id="@("publishLabel_" + contentItem.Id.ToString())" style="display: @publishLblStatus">
                                 <text> - </text>@T("Published")
-                            }
+                            </span>
+                            <span id="@("unpublishLabel_" + contentItem.Id.ToString())" style="display: @unpublishLblStatus">
+                                <text> - </text>@T("Not Published")
+                            </span>
                         </span>
                         @foreach (var ad in validDescriptors)
                         {
                             var description = ad.Evaluate(contentItem);
                             if (!string.IsNullOrWhiteSpace(description))
                             {
-                                <span> - @Html.Raw(description)</span>
+                                <text> - </text>@Html.Raw(description)
                             }
                         }
                     </td>
@@ -119,6 +121,8 @@
                     success: function () {
                         $('#unpublish_' + contentId).hide();
                         $('#publish_' + contentId).show();
+                        $('#unpublishLabel_' + contentId).show();
+                        $('#publishLabel_' + contentId).hide();
                     }
                 });
             }
@@ -138,6 +142,8 @@
                     success: function () {
                         $('#unpublish_' + contentId).show();
                         $('#publish_' + contentId).hide();
+                        $('#unpublishLabel_' + contentId).hide();
+                        $('#publishLabel_' + contentId).show();
                     }
                 });
             }

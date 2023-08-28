@@ -33,7 +33,6 @@ namespace Orchard.ArchiveLater.Services {
         /// <param name="content"></param>
         /// <returns></returns>
         public string Evaluate(IContent content) {
-            if (content.IsPublished()) {
                 var part = content.As<ArchiveLaterPart>();
                 if (part != null) {
                     var archiveDate = part.ScheduledArchiveUtc;
@@ -43,8 +42,6 @@ namespace Orchard.ArchiveLater.Services {
                         return T("Archiving on {0}", ((DateTime)archiveDate.Value).ToString(cultureInfo.DateTimeFormat.ShortDatePattern, cultureInfo)).Text;
                     }
                 }
-
-            }
             return string.Empty;
         }
     }
