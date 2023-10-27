@@ -18,7 +18,6 @@
   <!-- Boolean -->
   <Place Fields_Boolean_Edit="Content:2.6"/>
   <Place Fields_Boolean="Content:after"/>
-  <Place Fields_Boolean-VisibleAtFrontEnd="-"/>
 
   <!-- DateTime -->
   <Place Fields_DateTime_Edit="Content:2.5"/>
