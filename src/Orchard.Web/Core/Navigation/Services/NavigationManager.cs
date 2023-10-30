@@ -12,7 +12,6 @@ using Orchard.UI;
 using Orchard.UI.Navigation;
 using Orchard.Utility;
 using Orchard.Exceptions;
-using Orchard.Core.Navigation.Models;
 
 namespace Orchard.Core.Navigation.Services {
     public class NavigationManager : INavigationManager {

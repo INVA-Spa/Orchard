@@ -19,15 +19,11 @@ namespace Orchard.Core.Navigation.Services {
 
         public void GetMenu(IContent menu, NavigationBuilder builder) {
 
-            //List of all items
+            //List of all items (hidden or not)
             var menuParts = _contentManager
                 .Query<MenuPart, MenuPartRecord>()
                 .Where(x => x.MenuId == menu.Id)
                 .List().ToList<MenuPart>();
-
-            //Copy the list
-            MenuPart[] menuParts1 = new MenuPart[menuParts.Count];
-            menuParts.CopyTo(menuParts1);
 
             //List of hidden items
             var menuPartsHidden = _contentManager
@@ -36,10 +32,14 @@ namespace Orchard.Core.Navigation.Services {
                 .List();
 
             //Removing from menuList the items with VisibleAtFrontEnd set to false
-            foreach (var itemHidden in menuPartsHidden)
+            foreach (var itemHidden in menuPartsHidden) {
+                //Copy the list
+                MenuPart[] menuParts1 = new MenuPart[menuParts.Count];
+                menuParts.CopyTo(menuParts1);
                 foreach (var item in menuParts1)
-                    if (item.MenuPosition.StartsWith(itemHidden.MenuPosition)) 
-                        menuParts.Remove(item); 
+                    if (item.MenuPosition.StartsWith(itemHidden.MenuPosition))
+                        menuParts.Remove(item);
+            }
 
             //An attempt to optimize the code above but unsuccessful
             //var menuParts = _contentManager
