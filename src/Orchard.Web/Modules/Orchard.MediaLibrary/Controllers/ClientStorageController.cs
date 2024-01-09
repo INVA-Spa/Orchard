@@ -172,6 +172,13 @@ namespace Orchard.MediaLibrary.Controllers {
                     if (mediaItemsUsingTheFile == 1) { // if the file is referenced only by the deleted media content, the file too can be removed.
                         try {
                             _mediaLibraryService.DeleteFile(replaceMedia.FolderPath, replaceMedia.FileName);
+                            //Added in order to change FileName and Title too when replacing file
+                            if (replaceMedia.Title == Path.GetFileNameWithoutExtension(replaceMedia.FileName)) {
+                                //Change the Title only if is equal to FileName, otherwise likely someone has changed it with a meaningful description
+                                replaceMedia.Title = Path.GetFileNameWithoutExtension(filename);
+                            }
+                            replaceMedia.FileName = filename;
+                            //end
                         } catch (ArgumentException) { // File not found by FileSystemStorageProvider is thrown as ArgumentException.
                             statuses.Add(new {
                                 error = T("Error when deleting file to replace: file {0} does not exist in folder {1}. Media has been updated anyway.", replaceMedia.FileName, replaceMedia.FolderPath).Text,
