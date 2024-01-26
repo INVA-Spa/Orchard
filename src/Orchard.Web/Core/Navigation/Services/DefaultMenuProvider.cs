@@ -15,15 +15,21 @@ namespace Orchard.Core.Navigation.Services {
 
         public DefaultMenuProvider(IContentManager contentManager) {
             _contentManager = contentManager;
+            _menuPartsMemory = new Dictionary<int, IEnumerable<MenuPart>>();
         }
 
-        public void GetMenu(IContent menu, NavigationBuilder builder) {
+        // Prevent doing the same query for MenuParts more than once on a same request
+        // in case we are building the same menu several times.
+        private Dictionary<int, IEnumerable<MenuPart>> _menuPartsMemory;
 
-            //List of all items (hidden or not)
-            var menuParts = _contentManager
-                .Query<MenuPart, MenuPartRecord>()
-                .Where(x => x.MenuId == menu.Id)
-                .List().ToList<MenuPart>();
+        public void GetMenu(IContent menu, NavigationBuilder builder) {
+            if (!_menuPartsMemory.ContainsKey(menu.Id)) {
+                _menuPartsMemory[menu.Id] = _contentManager
+                    .Query<MenuPart, MenuPartRecord>()
+                    .Where(x => x.MenuId == menu.Id)
+                    .List();
+            }
+            var menuParts = _menuPartsMemory[menu.Id].ToList<MenuPart>();
 
             //List of hidden items
             var menuPartsHidden = _contentManager
