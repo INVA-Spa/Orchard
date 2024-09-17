@@ -10,6 +10,7 @@ using Orchard.Environment.Descriptor.Models;
 using System.Linq;
 using System.Collections;
 using System;
+using System.Text;
 
 namespace Orchard.Localization.Services {
     public class DefaultLocalizedStringManager : ILocalizedStringManager {
@@ -46,10 +47,36 @@ namespace Orchard.Localization.Services {
             Logger = NullLogger.Instance;
         }
 
-        ILogger Logger { get; set; }
+        public ILogger Logger { get; set; }
         public bool DisableMonitoring { get; set; }
 
         public FormatForScope GetLocalizedString(IEnumerable<string> scopes, string text, string cultureName) {
+            var result = InnerGetLocalizedString(scopes, text, cultureName);
+            if (result == null) {
+                /*
+                 * Log out messages that look like what we would have in the .po files
+                 * Prepend that with a line telling the target culture for which the localization is missing
+                msgctxt "Orchard.Users.Activities.CreateUserActivity"
+                msgid "InvalidPassword"
+                msgstr "**InvelidPassword**"
+                 */
+                var sb = new StringBuilder();
+                // The configured appender for the localizations file will only consider
+                // messages that contain "##CULTURE##"
+                sb.AppendLine("##CULTURE## " + cultureName);
+                // These three lines math those found in .po files.
+                sb.AppendLine("msgctxt \"" + scopes.FirstOrDefault() + "\"");
+                sb.AppendLine("msgid \"" + text + "\"");
+                sb.AppendLine("msgstr \"**" + text + "**\"");
+                // to enable/disable logging this information, search in log4net.config
+                // for the logger named Orchard.Localization.Services.DefaultLocalizedStringManager
+                Logger.Information(sb.ToString());
+                return new FormatForScope(text, scopes.FirstOrDefault());
+            }
+            return result;
+        }
+
+        protected FormatForScope InnerGetLocalizedString(IEnumerable<string> scopes, string text, string cultureName) {
             var culture = LoadCulture(cultureName);
             text = text ?? string.Empty;
             foreach (var scope in scopes) {
@@ -69,7 +96,7 @@ namespace Orchard.Localization.Services {
                     return new FormatForScope(parent_text, scope);
                 }
             }
-            return new FormatForScope(text, scopes.FirstOrDefault());
+            return null;
         }
 
         // This will translate a string into a string in the target cultureName.

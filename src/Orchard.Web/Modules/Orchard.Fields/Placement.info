@@ -26,5 +26,4 @@
   <Match DisplayType="SummaryAdmin">
     <Place Fields_DateTime="Content"/>
   </Match>
-
 </Placement>

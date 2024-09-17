@@ -103,6 +103,7 @@
     <Compile Include="Services\IPublishLaterService.cs" />
     <Compile Include="Services\PublishingTaskManager.cs" />
     <Compile Include="Services\PublishLaterService.cs" />
+    <Compile Include="Services\PublishLaterUIDescriptorForPicker.cs" />
     <Compile Include="Services\XmlRpcHandler.cs" />
     <Compile Include="ViewModels\PublishLaterViewModel.cs" />
   </ItemGroup>

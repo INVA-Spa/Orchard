@@ -193,3 +193,16 @@ src/Orchard.Azure/Orchard.Azure.CloudService/Staging/
 !lib/**/*.*
 */.vs/*
 src/Rebracer.xml
+Sites.config
+Host.config
+HostComponents.config
+HostComponents.Debug.config
+HostComponents.Release.config
+Inva.Orchard.Core.config
+Inva.Orchard.LoveVda.Vit.config
+Inva.Orchard.OutputCache.config
+Inva.Vit.UrlRewrite.config
+Inva.VIT2020.DataLayer.config
+log4net.config
+log4net.Debug.config
+log4net.Release.config

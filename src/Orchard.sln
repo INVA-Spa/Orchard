@@ -280,6 +280,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Orchard.Resources", "Orchar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inva.AUSL.Farmacie", "Orchard.Web\Modules\Inva.AUSL.Farmacie\Inva.AUSL.Farmacie.csproj", "{5D75715B-BE61-4E4A-A025-8A5454E1587A}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Inva.Orchard.LoveVda.CacheManager", "Orchard.Web\Modules\Inva.Orchard.LoveVda.CacheManager\Inva.Orchard.LoveVda.CacheManager.csproj", "{6209BBBB-C5F0-4A81-95B0-9EA13B3F1AFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		CodeCoverage|Any CPU = CodeCoverage|Any CPU
@@ -1106,10 +1108,17 @@ Global
 		{D4E8F7C8-2DB2-4C50-A422-DA1DF1E3CC73}.FxCop|Any CPU.ActiveCfg = Release|Any CPU
 		{D4E8F7C8-2DB2-4C50-A422-DA1DF1E3CC73}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D4E8F7C8-2DB2-4C50-A422-DA1DF1E3CC73}.Release|Any CPU.Build.0 = Release|Any CPU
+<<<<<<< HEAD
 		{5D75715B-BE61-4E4A-A025-8A5454E1587A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5D75715B-BE61-4E4A-A025-8A5454E1587A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5D75715B-BE61-4E4A-A025-8A5454E1587A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5D75715B-BE61-4E4A-A025-8A5454E1587A}.Release|Any CPU.Build.0 = Release|Any CPU
+=======
+		{6209BBBB-C5F0-4A81-95B0-9EA13B3F1AFD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6209BBBB-C5F0-4A81-95B0-9EA13B3F1AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6209BBBB-C5F0-4A81-95B0-9EA13B3F1AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6209BBBB-C5F0-4A81-95B0-9EA13B3F1AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+>>>>>>> lovevda_responsive
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -1197,7 +1206,11 @@ Global
 		{90EBEE36-B5CD-42A8-A21B-76270E2C5D24} = {DF3909B0-1DDD-4D8A-9919-56FC438E25E2}
 		{98251EAE-A41B-47B2-AA91-E28B8482DA70} = {E9C9F120-07BA-4DFB-B9C3-3AFB9D44C9D5}
 		{D4E8F7C8-2DB2-4C50-A422-DA1DF1E3CC73} = {E9C9F120-07BA-4DFB-B9C3-3AFB9D44C9D5}
+<<<<<<< HEAD
 		{5D75715B-BE61-4E4A-A025-8A5454E1587A} = {E9C9F120-07BA-4DFB-B9C3-3AFB9D44C9D5}
+=======
+		{6209BBBB-C5F0-4A81-95B0-9EA13B3F1AFD} = {E9C9F120-07BA-4DFB-B9C3-3AFB9D44C9D5}
+>>>>>>> lovevda_responsive
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {3585D970-275B-4363-9F61-CD37CFC9DCD3}
