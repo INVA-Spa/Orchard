@@ -61,7 +61,19 @@ namespace Orchard.Widgets.Controllers {
                 return RedirectToAction("Index", "Admin", new { area = "Dashboard" });
             }
 
-            IEnumerable<LayerPart> layers = _widgetsService.GetLayers().OrderBy(x => x.Name).ToList();
+            //IEnumerable<LayerPart> layers = _widgetsService.GetLayers().OrderBy(x => x.Name).ToList();
+            // ***************************************************************************
+            // MODIFICA INVA 22-11-2018
+            IEnumerable<LayerPart> layers =
+               _widgetsService.GetLayers()
+               .Where(layer => layer.Name != "ContentWidgets")
+               .OrderBy(x => x.Name)
+               .ToList();
+
+            // ***************************************************************************
+
+
+
 
 
 
@@ -110,13 +122,17 @@ namespace Orchard.Widgets.Controllers {
                     return false;
                 }).ToList();
             }
-
+            var layersIds = layers.Select(l => l.Id);
             var viewModel = Shape.ViewModel()
                 .CurrentTheme(currentTheme)
                 .CurrentLayer(currentLayer)
                 .CurrentCulture(culture)
                 .Layers(layers)
-                .Widgets(widgets)
+                // .Widgets(widgets)
+                // ***************************************************************************
+                // MODIFICA INVA 29-11-2018
+                .Widgets(widgets.Where(w => w.LayerId.HasValue && layersIds.Contains((int)w.LayerId)))
+                // ***************************************************************************
                 .Zones(currentThemesZones)
                 .Cultures(_cultureManager.ListCultures())
                 .OrphanZones(allZones.Except(currentThemesZones))

@@ -18,6 +18,13 @@ using Orchard.Users.Events;
 using Orchard.Users.Models;
 using Orchard.Users.Services;
 using Orchard.Utility.Extensions;
+using System;
+using System.Diagnostics.CodeAnalysis;
+using System.Text.RegularExpressions;
+using System.Web.Mvc;
+using System.Web.Security;
+using Orchard.Services;
+using System.Collections.Generic;
 
 namespace Orchard.Users.Controllers {
     [HandleError, Themed]

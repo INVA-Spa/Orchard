@@ -38,7 +38,7 @@
                 <tr>
                     <td><input type="checkbox" value="@id" name="submissionIds" /></td>
                     @foreach (var dataColumn in dataColumns) {
-                        <td>@dataRow[dataColumn]</td>
+                        <td>@Html.Raw(dataRow[dataColumn])</td>
                     }
                     <td>
                         @Html.ActionLink(T("Details").Text, "Details", "SubmissionAdmin", new { id = id, area = "Orchard.DynamicForms" }, null) @T(" | ")

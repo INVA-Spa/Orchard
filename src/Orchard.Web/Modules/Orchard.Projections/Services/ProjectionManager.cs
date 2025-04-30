@@ -231,6 +231,17 @@ namespace Orchard.Projections.Services {
                         continue;
                     }
 
+                    // DB 27/08/2019
+                    // controllo sulla ricerca FullText, se la stringa è vuota non tiene in considerazione il filtro
+                    if ((string)filterContext.State["Operator"] != null) {
+                        if (((string)filterContext.State["Operator"]).ToLower().StartsWith("contains")) {
+                            if (((string)filterContext.State["Value"]) != null && ((string)filterContext.State["Value"]) == "") {
+                                continue;
+                            }
+                        }
+                    }
+
+
                     // apply alteration
                     descriptor.Filter(filterContext);
 
@@ -269,6 +280,11 @@ namespace Orchard.Projections.Services {
 
                 yield return contentQuery;
             }
+        }
+        class FiltroTesto {
+            public string Description { get; set; }
+            public string Operator { get; set; }
+            public string Value { get; set; }
         }
     }
 }
