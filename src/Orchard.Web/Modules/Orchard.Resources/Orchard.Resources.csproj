@@ -116,6 +116,7 @@
     <Content Include="Assets\Js\Bootstrap\dropdown.js" />
     <Content Include="Assets\Js\Bootstrap\modal.js" />
     <Content Include="Assets\Js\Bootstrap\popover.js" />
+    <Content Include="Assets\Js\Bootstrap\popper.min.js" />
     <Content Include="Assets\Js\Bootstrap\scrollspy.js" />
     <Content Include="Assets\Js\Bootstrap\tab.js" />
     <Content Include="Assets\Js\Bootstrap\tooltip.js" />
