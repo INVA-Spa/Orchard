@@ -38,12 +38,15 @@ namespace Orchard.Core.Navigation.Services {
 
             //Removing from menuList the items with VisibleAtFrontEnd set to false
             foreach (var itemHidden in menuPartsHidden) {
-                //Copy the list
-                MenuPart[] menuParts1 = new MenuPart[menuParts.Count];
-                menuParts.CopyTo(menuParts1);
-                foreach (var item in menuParts1)
-                    if (item.MenuPosition.StartsWith(itemHidden.MenuPosition))
+                // Copia la lista per evitare modifiche durante l’iterazione
+                var menuPartsCopy = menuParts.ToList();
+
+                foreach (var item in menuPartsCopy) {
+                    if (item.MenuPosition == itemHidden.MenuPosition ||
+                        item.MenuPosition.StartsWith(itemHidden.MenuPosition + ".")) {
                         menuParts.Remove(item);
+                    }
+                }
             }
 
             foreach (var menuPart in menuParts) {
