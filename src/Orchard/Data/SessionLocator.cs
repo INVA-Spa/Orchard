@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Web;
 using NHibernate;
 using NHibernate.SqlCommand;
 using NHibernate.Type;
@@ -117,10 +118,55 @@ namespace Orchard.Data {
             var sessionFactory = _sessionFactoryHolder.GetSessionFactory();
             Logger.Debug("Opening NHibernate session");
             _session = sessionFactory.OpenSession(new OrchardSessionInterceptor(_interceptors.ToArray(), Logger));
+            if (IsReadOnlyFrontEndRequest()) {
+                // With the default FlushMode.Auto NHibernate dirty-checks every entity loaded in the session
+                // before each query; on front-end pages that load hundreds of records this costs a large share
+                // of the CPU. Read requests rarely write, and changes are still flushed when the transaction
+                // commits at the end of the request: they only stop being visible to later queries in the same request.
+                _session.FlushMode = FlushMode.Commit;
+            }
             // When BeginTransaction fails, the exception will be propagated so that
             // global exception handling code will dispose this session.
             _session.BeginTransaction(level);
             _contentManagerSession = _contentManagerSessionFactory();
+        }
+
+        // appSetting "Orchard:CommitFlushModeOnGet" = "false" restores FlushMode.Auto for every request.
+        private static readonly bool CommitFlushModeOnGetEnabled =
+            !string.Equals(System.Configuration.ConfigurationManager.AppSettings["Orchard:CommitFlushModeOnGet"], "false", StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// True for GET/HEAD requests outside the admin area. False when there is no HTTP request
+        /// (background tasks, application start-up).
+        /// </summary>
+        private static bool IsReadOnlyFrontEndRequest() {
+            if (!CommitFlushModeOnGetEnabled) {
+                return false;
+            }
+            HttpRequest request;
+            try {
+                var context = HttpContext.Current;
+                if (context == null) {
+                    return false;
+                }
+                request = context.Request;
+            }
+            catch (HttpException) {
+                // Request is not available in this context (e.g. Application_Start)
+                return false;
+            }
+            var method = request.HttpMethod;
+            if (!string.Equals(method, "GET", StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(method, "HEAD", StringComparison.OrdinalIgnoreCase)) {
+                return false;
+            }
+            var path = request.AppRelativeCurrentExecutionFilePath ?? string.Empty;
+            foreach (var segment in path.Split(new[] { '/' }, StringSplitOptions.RemoveEmptyEntries)) {
+                if (string.Equals(segment, "Admin", StringComparison.OrdinalIgnoreCase)) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         class OrchardSessionInterceptor : IInterceptor {
