@@ -6,6 +6,7 @@ using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
 using System.Web;
+using Orchard.Caching;
 using Orchard.ContentManagement;
 using Orchard.FileSystems.Media;
 using Orchard.Forms.Services;
@@ -13,17 +14,23 @@ using Orchard.Logging;
 using Orchard.MediaProcessing.Descriptors.Filter;
 using Orchard.MediaProcessing.Media;
 using Orchard.MediaProcessing.Models;
+using Orchard.Services;
 using Orchard.Tokens;
 using Orchard.Utility.Extensions;
 
 namespace Orchard.MediaProcessing.Services {
     public class ImageProfileManager : IImageProfileManager {
+        // How long the absence of an original image is remembered before checking the disk again.
+        private static readonly TimeSpan MissingOriginalCacheDuration = TimeSpan.FromMinutes(5);
+
         private readonly IStorageProvider _storageProvider;
         private readonly IImageProcessingFileNameProvider _fileNameProvider;
         private readonly IImageProfileService _profileService;
         private readonly IImageProcessingManager _processingManager;
         private readonly IOrchardServices _services;
         private readonly ITokenizer _tokenizer;
+        private readonly ICacheManager _cacheManager;
+        private readonly IClock _clock;
 
         public ImageProfileManager(
             IStorageProvider storageProvider,
@@ -31,13 +38,17 @@ namespace Orchard.MediaProcessing.Services {
             IImageProfileService profileService,
             IImageProcessingManager processingManager,
             IOrchardServices services,
-            ITokenizer tokenizer) {
+            ITokenizer tokenizer,
+            ICacheManager cacheManager,
+            IClock clock) {
             _storageProvider = storageProvider;
             _fileNameProvider = fileNameProvider;
             _profileService = profileService;
             _processingManager = processingManager;
             _services = services;
             _tokenizer = tokenizer;
+            _cacheManager = cacheManager;
+            _clock = clock;
 
             Logger = NullLogger.Instance;
         }
@@ -109,6 +120,12 @@ namespace Orchard.MediaProcessing.Services {
 
             // todo: regenerate the file if the profile is newer, by deleting the associated filename cache entries.
             if (process) {
+                // A missing original would otherwise be retried on every rendering: exception, error log
+                // with stack trace and the per-path lock below, with null as the result anyway.
+                if (IsLocalOriginalMissing(path)) {
+                    return null;
+                }
+
                 Logger.Debug("Processing profile {0} for image {1}", profileName, path);
 
                 ImageProfilePart profilePart;
@@ -223,9 +240,46 @@ namespace Orchard.MediaProcessing.Services {
             return null;
         }
 
+        /// <summary>
+        /// True when <paramref name="path"/> points to the local storage and the file is not there, i.e. when
+        /// <see cref="GetImage"/> would log an error and return null. The result is cached for
+        /// <see cref="MissingOriginalCacheDuration"/> and the absence is logged once per period.
+        /// Absolute and app-relative paths are left to <see cref="GetImage"/>, which can download them.
+        /// </summary>
+        private bool IsLocalOriginalMissing(string path) {
+            if (path == null || Uri.IsWellFormedUriString(path, UriKind.Absolute) || VirtualPathUtility.IsAppRelative(path)) {
+                return false;
+            }
+
+            var storagePath = _storageProvider.GetStoragePath(path);
+            if (storagePath == null) {
+                return false;
+            }
+
+            return _cacheManager.Get("MissingOriginal:" + storagePath, ctx => {
+                ctx.Monitor(_clock.When(MissingOriginalCacheDuration));
+                bool missing;
+                try {
+                    missing = !_storageProvider.FileExists(storagePath);
+                }
+                catch (Exception e) {
+                    // invalid path: let GetImage handle and log it as before
+                    Logger.Debug(e, "Could not check the original image {0}", storagePath);
+                    return false;
+                }
+                if (missing) {
+                    // Error (not Warning) so it stays visible with the production log level; no stack trace
+                    Logger.Error("Original image not found, profile not generated (checked again in {0} minutes): {1}",
+                        MissingOriginalCacheDuration.TotalMinutes, storagePath);
+                }
+                return missing;
+            });
+        }
+
         private bool TryGetImageLastUpdated(string path, out DateTime lastUpdated) {
             var storagePath = _storageProvider.GetStoragePath(path);
-            if (storagePath != null) {
+            // a missing original must not break the rendering when the processed file is still available
+            if (storagePath != null && _storageProvider.FileExists(storagePath)) {
                 var file = _storageProvider.GetFile(storagePath);
                 lastUpdated = file.GetLastUpdated();
                 return true;
